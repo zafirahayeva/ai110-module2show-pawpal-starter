@@ -6,6 +6,12 @@
 
 - Briefly describe your initial UML design.
 - What classes did you include, and what responsibilities did you assign to each?
+    core actions: create schedule, track tasks, add tasks, enter self & pet info
+    classes
+        pet - species, name, age 
+        task - duration, priority, frequency | tracks status
+        owner - pets owned, available slots, preferred times 
+        schedule - list of tasks, constraints | generates plan, sorts tasks,
 
 **b. Design changes**
 
