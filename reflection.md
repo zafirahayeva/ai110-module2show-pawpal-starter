@@ -1,11 +1,6 @@
 # PawPal+ Project Reflection
 
 ## 1. System Design
-
-**a. Initial design**
-
-- Briefly describe your initial UML design.
-- What classes did you include, and what responsibilities did you assign to each?
     core actions: create schedule, track tasks, add tasks, enter self & pet info
     classes
         pet - species, name, age 
@@ -13,11 +8,17 @@
         owner - pets owned, available slots, preferred times 
         schedule - list of tasks, constraints | generates plan, sorts tasks,
 
+**a. Initial design**
+
+- Briefly describe your initial UML design.
+- What classes did you include, and what responsibilities did you assign to each?
+    I included four classes in my initial UML design: pet, owner, task, and schedule. Pet had species, name, and age attributes. It updated its age and returned its own info. Task had duration,  priority, frequency, and status. It can assign a status and pet. It can reschedule itself and return a summary. Owner had a list of pets, availability, preferred times. It can add and remove pets and update the availability and preferrences. Schedule has the list of tasks, and when it was created and updated. It generates the schedule and can add and remove tasks. It can also sort tasks by priority. 
+
 **b. Design changes**
 
 - Did your design change during implementation?
 - If yes, describe at least one change and why you made it.
-
+Yes, I added bidirectional mapping to Owner and Task so that tasks are always linked to an owner. This prevents ambiguity about whose schedule a task belongs to.
 ---
 
 ## 2. Scheduling Logic and Tradeoffs

@@ -1,5 +1,5 @@
 ﻿from __future__ import annotations
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
 from typing import List, Optional
 
@@ -29,9 +29,13 @@ class Task:
     status: str = "pending"  # pending, in-progress, done
     due_datetime: Optional[datetime] = None
     pet: Optional[Pet] = None
+    owner: Optional["Owner"] = None
 
     def assign_pet(self, pet: Pet) -> None:
         self.pet = pet
+
+    def assign_owner(self, owner: "Owner") -> None:
+        self.owner = owner
 
     def mark_complete(self) -> None:
         self.status = "done"
@@ -49,6 +53,7 @@ class Owner:
         self.name = name
         self.email = email
         self.pets: List[Pet] = []
+        self.tasks: List[Task] = []
         self.available_slots: int = 0
         self.preferred_times: List[str] = []
 
@@ -58,6 +63,16 @@ class Owner:
     def remove_pet(self, pet: Pet) -> None:
         self.pets = [p for p in self.pets if p is not pet]
 
+    def add_task(self, task: Task) -> None:
+        task.owner = self
+        if task.pet and task.pet not in self.pets:
+            raise ValueError("Task pet must belong to the owner")
+        self.tasks.append(task)
+
+    def remove_task(self, task: Task) -> None:
+        self.tasks = [t for t in self.tasks if t is not task]
+        task.owner = None
+
     def set_availability(self, slots: int) -> None:
         self.available_slots = slots
 
@@ -66,7 +81,8 @@ class Owner:
 
     def dashboard(self) -> str:
         pet_list = ", ".join(p.name for p in self.pets) or "No pets"
-        return f"Owner: {self.name}, Pets: {pet_list}, Slots: {self.available_slots}"
+        task_list = ", ".join(t.title for t in self.tasks) or "No tasks"
+        return f"Owner: {self.name}, Pets: {pet_list}, Tasks: {task_list}, Slots: {self.available_slots}"
 
 class Schedule:
     def __init__(self, owner: Owner):
@@ -76,6 +92,10 @@ class Schedule:
         self.last_updated = self.created_at
 
     def add_task(self, task: Task) -> None:
+        if task.owner is not self.owner:
+            raise ValueError("Task owner must match schedule owner")
+        if task.pet and task.pet not in self.owner.pets:
+            raise ValueError("Task pet must belong to the schedule owner")
         self.tasks.append(task)
         self.last_updated = datetime.now()
 
@@ -95,5 +115,5 @@ class Schedule:
 
     def next_task(self) -> Optional[Task]:
         pending = [t for t in self.tasks if t.status != "done"]
-        return min(pending, key=lambda t: t.priority, default=None)
+        return min(pending, key=lambda t: (t.priority, t.due_datetime or datetime.max), default=None)
 
