@@ -50,3 +50,17 @@ Advanced features for efficient pet care planning:
 - **Priority-Based Sorting**: Automatically sort tasks by priority and due date to generate optimized daily plans.
 - **Recurring Tasks**: Daily and weekly tasks auto-create new instances upon completion, scheduled for the next occurrence.
 - **Conflict Detection**: Warns about overlapping tasks for the same pet or across different pets, preventing scheduling errors without crashing the app.
+
+## Testing PawPal+
+
+Run the test suite using: python -m pytest
+
+The test suite covers:
+- Basic task and pet management functionality
+- Task filtering by status and pet name
+- **Sorting Correctness**: Verifies tasks are returned in chronological order
+- **Recurrence Logic**: Confirms that marking a daily task complete creates a new task for the following day
+- **Conflict Detection**: Verifies that the Scheduler flags duplicate times and overlapping tasks
+
+**Confidence Level**: 4.5/5 stars - The core scheduling features are well-tested and reliable, with comprehensive coverage of sorting, recurrence, and conflict detection. All tests pass successfully, indicating solid implementation of the key requirements.
+
