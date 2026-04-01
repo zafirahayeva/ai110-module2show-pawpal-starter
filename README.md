@@ -76,3 +76,5 @@ The test suite covers:
 - **Due Task Identification**: Identifies and lists all overdue tasks based on current time and due dates. Implemented in `Schedule.due_tasks()`.
 - **Next Task Selection**: Selects the highest-priority pending task for immediate action. Implemented in `Schedule.next_task()`.
 - **Owner Dashboard**: Provides a summary of pets, tasks, and available slots for quick overview. Implemented in `Owner.dashboard()`.
+
+<img width="1567" height="836" alt="image" src="https://github.com/user-attachments/assets/09eb5db8-a666-400e-a822-07f4fb1cc518" />
