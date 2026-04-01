@@ -64,3 +64,15 @@ The test suite covers:
 
 **Confidence Level**: 4.5/5 stars - The core scheduling features are well-tested and reliable, with comprehensive coverage of sorting, recurrence, and conflict detection. All tests pass successfully, indicating solid implementation of the key requirements.
 
+## Features
+
+### Core Algorithms Implemented
+
+- **Priority-Based Sorting**: Tasks are sorted by priority level (1-5, where 1 is highest) and due date to create optimized daily plans. Implemented in `Schedule.generate_plan()` and `Schedule.sort_by_priority()`.
+- **Time-Based Sorting**: Tasks can be sorted by their scheduled time (HH:MM) for chronological ordering. Implemented in `Schedule.sort_by_time()`.
+- **Conflict Detection**: Automatically detects time overlaps between tasks, warning users of conflicts for the same pet or different pets. Implemented in `Schedule.detect_conflicts()`.
+- **Daily/Weekly Recurrence**: Completed recurring tasks (daily or weekly) automatically generate the next occurrence. Implemented in `Schedule.mark_task_complete()`.
+- **Task Filtering**: Filter tasks by completion status (pending, in-progress, done) and/or pet name for targeted views. Implemented in `Schedule.filter_tasks()`.
+- **Due Task Identification**: Identifies and lists all overdue tasks based on current time and due dates. Implemented in `Schedule.due_tasks()`.
+- **Next Task Selection**: Selects the highest-priority pending task for immediate action. Implemented in `Schedule.next_task()`.
+- **Owner Dashboard**: Provides a summary of pets, tasks, and available slots for quick overview. Implemented in `Owner.dashboard()`.

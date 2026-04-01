@@ -148,7 +148,7 @@ class Schedule:
         self.created_at = datetime.now()
         self.last_updated = self.created_at
 
-    def add_task(self, task: Task) -> None:
+    def add_task(self, task: Task) -> Optional[str]:
         """Add a task to the schedule, validating owner and pet ownership."""
         if task.owner is not self.owner:
             raise ValueError("Task owner must match schedule owner")
@@ -158,9 +158,8 @@ class Schedule:
             self.tasks.append(task)
         # Check for conflicts
         warning = self.detect_conflicts(task)
-        if warning:
-            print(warning)
         self.last_updated = datetime.now()
+        return warning
 
     def remove_task(self, task: Task) -> None:
         """Remove a task from the schedule."""

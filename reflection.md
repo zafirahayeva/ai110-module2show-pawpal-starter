@@ -57,12 +57,13 @@ Yes, I added bidirectional mapping to Owner and Task so that tasks are always li
 
 - What behaviors did you test?
 - Why were these tests important?
+    I tested sorting, recurrence, conflict detection, filtering, and basic task functions such as adding tasks and updating status. 
 
 **b. Confidence**
 
 - How confident are you that your scheduler works correctly?
 - What edge cases would you test next if you had more time?
-
+    I am decently confident that my schedule works correctly. If I had more time, I would test what happens when an owner does not meet their deadlines, especially if the task is recurring. 
 ---
 
 ## 5. Reflection
@@ -70,11 +71,13 @@ Yes, I added bidirectional mapping to Owner and Task so that tasks are always li
 **a. What went well**
 
 - What part of this project are you most satisfied with?
-
+    I am satisified with how the backend logic was implemented. I enjoyed creating the methods for each behavior and then testing them. 
 **b. What you would improve**
 
 - If you had another iteration, what would you improve or redesign?
+    I would focus on implementing more UI features on the actual site. 
 
 **c. Key takeaway**
 
 - What is one important thing you learned about designing systems or working with AI on this project?
+I learned how to ask more focused questions and the importance of keeping separate chats. 

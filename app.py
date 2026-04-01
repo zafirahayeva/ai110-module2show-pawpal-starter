@@ -1,5 +1,6 @@
 import streamlit as st
 from pawpal_system import Owner, Pet, Task, Schedule
+from datetime import datetime, date
 
 
 st.set_page_config(page_title="PawPal+", page_icon="🐾", layout="centered")
@@ -68,6 +69,8 @@ with col2:
 with col3:
     priority_str = st.selectbox("Priority", ["low", "medium", "high"], index=2)
 
+due_time = st.time_input("Due time (optional)", value=None, key="due_time")
+
 priority_map = {"high": 1, "medium": 3, "low": 5}
 priority = priority_map[priority_str]
 
@@ -77,6 +80,9 @@ if st.button("Add task"):
         if owner.pets:
             pet = owner.pets[0]  # Assume one pet for now
             task = Task(title=task_title, duration_minutes=int(duration), priority=priority)
+            if due_time:
+                due_datetime = datetime.combine(date.today(), due_time)
+                task.due_datetime = due_datetime
             owner.add_task(task, pet)
             st.success(f"Task '{task_title}' added!")
         else:
@@ -89,7 +95,16 @@ if 'owner' in st.session_state:
     tasks = owner.all_tasks()
     if tasks:
         st.write("Current tasks:")
-        task_data = [{"Title": t.title, "Duration": f"{t.duration_minutes}m", "Priority": t.priority, "Status": t.status} for t in tasks]
+        task_data = [
+            {
+                "Title": t.title,
+                "Duration": f"{t.duration_minutes}m",
+                "Priority": t.priority,
+                "Status": t.status,
+                "Due Time": t.due_datetime.strftime("%H:%M") if t.due_datetime else "Unscheduled"
+            }
+            for t in tasks
+        ]
         st.table(task_data)
     else:
         st.info("No tasks yet. Add one above.")
@@ -106,13 +121,35 @@ if st.button("Generate schedule"):
         owner = st.session_state.owner
         if owner.tasks:
             schedule = Schedule(owner)
+            warnings = []
             for task in owner.tasks:
-                schedule.add_task(task)
+                warning = schedule.add_task(task)
+                if warning:
+                    warnings.append(warning)
             plan = schedule.generate_plan()
-            st.success("Schedule generated!")
-            st.write("### Scheduled Tasks (by priority):")
-            for i, task in enumerate(plan, 1):
-                st.write(f"{i}. {task.summary()}")
+            if warnings:
+                st.warning("Conflicts detected:")
+                for w in warnings:
+                    st.write(w)
+            else:
+                st.success("Schedule generated successfully with no conflicts!")
+            if all(t.due_datetime for t in plan):
+                schedule.sort_by_time()
+                st.subheader("Scheduled Tasks (sorted by time)")
+            else:
+                st.subheader("Scheduled Tasks (sorted by priority)")
+            task_data = [
+                {
+                    "#": i,
+                    "Title": task.title,
+                    "Duration": f"{task.duration_minutes}m",
+                    "Priority": task.priority,
+                    "Due Time": task.due_datetime.strftime("%H:%M") if task.due_datetime else "Unscheduled",
+                    "Status": task.status
+                }
+                for i, task in enumerate(plan, 1)
+            ]
+            st.table(task_data)
         else:
             st.warning("No tasks to schedule. Add some tasks first.")
     else:
