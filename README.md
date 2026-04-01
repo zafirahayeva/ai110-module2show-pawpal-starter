@@ -41,3 +41,12 @@ pip install -r requirements.txt
 5. Add tests to verify key behaviors.
 6. Connect your logic to the Streamlit UI in `app.py`.
 7. Refine UML so it matches what you actually built.
+
+## Smarter Scheduling
+
+Advanced features for efficient pet care planning:
+
+- **Task Filtering**: Filter tasks by completion status (e.g., pending) and/or pet name for quick views.
+- **Priority-Based Sorting**: Automatically sort tasks by priority and due date to generate optimized daily plans.
+- **Recurring Tasks**: Daily and weekly tasks auto-create new instances upon completion, scheduled for the next occurrence.
+- **Conflict Detection**: Warns about overlapping tasks for the same pet or across different pets, preventing scheduling errors without crashing the app.

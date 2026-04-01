@@ -156,6 +156,10 @@ class Schedule:
             raise ValueError("Task pet must belong to the schedule owner")
         if task not in self.tasks:
             self.tasks.append(task)
+        # Check for conflicts
+        warning = self.detect_conflicts(task)
+        if warning:
+            print(warning)
         self.last_updated = datetime.now()
 
     def remove_task(self, task: Task) -> None:
@@ -179,6 +183,10 @@ class Schedule:
         """Sort tasks by priority and due date in place."""
         self.tasks.sort(key=lambda t: (t.priority, t.due_datetime or datetime.max))
 
+    def sort_by_time(self) -> None:
+        """Sort tasks by time in HH:MM format."""
+        self.tasks.sort(key=lambda t: t.due_datetime.time() if t.due_datetime else datetime.max.time())
+
     def generate_plan(self) -> List[Task]:
         """Generate and return a prioritized task plan."""
         self.sort_by_priority()
@@ -197,4 +205,55 @@ class Schedule:
             raise ValueError("Pet must belong to schedule owner")
         task.assign_pet(pet)
         self.add_task(task)
+
+    def filter_tasks(self, status: Optional[str] = None, pet_name: Optional[str] = None) -> List[Task]:
+        """Filter tasks by completion status and/or pet name."""
+        filtered = self.tasks
+        if status:
+            filtered = [t for t in filtered if t.status == status]
+        if pet_name:
+            filtered = [t for t in filtered if t.pet and t.pet.name == pet_name]
+        return filtered
+
+    def detect_conflicts(self, new_task: Task) -> Optional[str]:
+        """Detect time conflicts for the new task with existing tasks for same or different pets."""
+        if not new_task.due_datetime:
+            return None
+        new_start = new_task.due_datetime
+        new_end = new_start + timedelta(minutes=new_task.duration_minutes)
+        for existing_task in self.tasks:
+            if existing_task == new_task or existing_task.status == "done" or not existing_task.due_datetime:
+                continue
+            existing_start = existing_task.due_datetime
+            existing_end = existing_start + timedelta(minutes=existing_task.duration_minutes)
+            if new_start < existing_end and existing_start < new_end:
+                conflict_type = "same pet" if existing_task.pet == new_task.pet else "different pet"
+                same_pet_text = " for pet '" + new_task.pet.name + "'" if new_task.pet and existing_task.pet == new_task.pet else ""
+                pet_text = (f" for pet '{new_task.pet.name}' and pet '{existing_task.pet.name}'" if new_task.pet and existing_task.pet and existing_task.pet != new_task.pet else same_pet_text)
+                return f"Warning: Task '{new_task.title}' conflicts with '{existing_task.title}' ({conflict_type}){pet_text}."
+        return None
+
+    def mark_task_complete(self, task: Task) -> None:
+        """Mark a task as completed and automatically create the next occurrence for recurring tasks."""
+        task.status = "done"
+        if task.frequency in ["daily", "weekly"]:
+            delta = timedelta(days=1 if task.frequency == "daily" else 7)
+            if task.due_datetime:
+                new_date = datetime.now().date() + delta
+                new_due = datetime.combine(new_date, task.due_datetime.time())
+            else:
+                new_due = datetime.now() + delta
+            new_task = Task(
+                title=task.title,
+                duration_minutes=task.duration_minutes,
+                priority=task.priority,
+                frequency=task.frequency,
+                status="pending",
+                due_datetime=new_due,
+                pet=task.pet,
+                owner=task.owner
+            )
+            self.owner.add_task(new_task, pet=task.pet)
+            self.add_task(new_task)
+        self.last_updated = datetime.now()
 

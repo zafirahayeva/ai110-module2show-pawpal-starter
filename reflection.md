@@ -41,11 +41,13 @@ Yes, I added bidirectional mapping to Owner and Task so that tasks are always li
 
 - How did you use AI tools during this project (for example: design brainstorming, debugging, refactoring)?
 - What kinds of prompts or questions were most helpful?
+    I used AI to implement several methods and to create pytests to validate them. Direct prompts were the most helpful. The prompts were also concise and I made sure to keep my chats separate with a focus on different things. 
 
 **b. Judgment and verification**
 
 - Describe one moment where you did not accept an AI suggestion as-is.
 - How did you evaluate or verify what the AI suggested?
+    When Copilot suggested a simplification for my sorting/filtering algorithm, I opted to not use its suggestion. Adding more features could introduce more bugs. I compared its suggestion with what I currently had and weighed the pros and cons of each. 
 
 ---
 
